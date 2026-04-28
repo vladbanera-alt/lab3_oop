@@ -1,64 +1,57 @@
+import pytest
 from main import Block, Program
 
 
+def test_calculate_variant():
+    assert Program.calculate_variant(5202) == 10
+
+
 def test_block_equality():
-    b1 = Block("Stone", "rock", 5, 10, True)
-    b2 = Block("Stone", "rock", 5, 10, True)
+    b1 = Block("Wood", "organic", 3, 5, True)
+    b2 = Block("Wood", "organic", 3, 5, True)
+    b3 = Block("Stone", "rock", 5, 10, True)
 
     assert b1 == b2
+    assert b1 != b3
 
 
-def test_block_inequality():
-    b1 = Block("Stone", "rock", 5, 10, True)
-    b2 = Block("Glass", "sand", 1, 3, False)
+def test_create_blocks():
+    blocks = Program.create_blocks()
 
-    assert b1 != b2
-
-
-def test_sorting_order():
-    blocks = [
-        Block("A", "m1", 3, 10, True),
-        Block("B", "m2", 1, 50, True),
-        Block("C", "m3", 1, 20, True),
-    ]
-
-    sorted_blocks = sorted(blocks, key=lambda b: (b.hardness, -b.weight))
-
-    assert sorted_blocks[0].name == "C"
-    assert sorted_blocks[1].name == "B"
-    assert sorted_blocks[2].name == "A"
+    assert len(blocks) == 5
+    assert isinstance(blocks[0], Block)
 
 
-def test_search_found():
-    blocks = [
-        Block("Stone", "rock", 5, 10, True),
-        Block("Wood", "organic", 3, 5, True),
-    ]
+def test_sort_blocks():
+    blocks = Program.create_blocks()
+    sorted_blocks = Program.sort_blocks(blocks)
+
+    assert sorted_blocks[0].hardness <= sorted_blocks[1].hardness
+
+    for i in range(len(sorted_blocks) - 1):
+        b1 = sorted_blocks[i]
+        b2 = sorted_blocks[i + 1]
+
+        if b1.hardness == b2.hardness:
+            assert b1.weight >= b2.weight
+
+
+def test_find_block_found():
+    blocks = Program.create_blocks()
+    sorted_blocks = Program.sort_blocks(blocks)
 
     target = Block("Wood", "organic", 3, 5, True)
+    result = Program.find_block(sorted_blocks, target)
 
-    found = None
-    for b in blocks:
-        if b == target:
-            found = b
-            break
-
-    assert found is not None
-    assert found.name == "Wood"
+    assert result is not None
+    assert result == target
 
 
-def test_search_not_found():
-    blocks = [
-        Block("Stone", "rock", 5, 10, True),
-        Block("Wood", "organic", 3, 5, True),
-    ]
+def test_find_block_not_found():
+    blocks = Program.create_blocks()
+    sorted_blocks = Program.sort_blocks(blocks)
 
-    target = Block("Iron", "metal", 7, 15, True)
+    target = Block("Gold", "metal", 10, 20, True)
+    result = Program.find_block(sorted_blocks, target)
 
-    found = None
-    for b in blocks:
-        if b == target:
-            found = b
-            break
-
-    assert found is None
+    assert result is None
