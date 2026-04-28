@@ -24,7 +24,6 @@ def test_sorting_order():
 
     sorted_blocks = sorted(blocks, key=lambda b: (b.hardness, -b.weight))
 
-    # спочатку hardness=1 (C потім B через weight ↓)
     assert sorted_blocks[0].name == "C"
     assert sorted_blocks[1].name == "B"
     assert sorted_blocks[2].name == "A"
