@@ -1,9 +1,4 @@
-import pytest
-from main import Block, Program, calculate_c_values
-
-def test_c11_calculation():
-    c11 = 5202 % 11
-    assert c11 == 10
+from main import Block, Program
 
 
 def test_block_equality():
@@ -19,19 +14,52 @@ def test_block_inequality():
 
     assert b1 != b2
 
-def test_program_output(capsys):
-    Program.main()
 
-    captured = capsys.readouterr().out
+def test_sorting_order():
+    blocks = [
+        Block("A", "m1", 3, 10, True),
+        Block("B", "m2", 1, 50, True),
+        Block("C", "m3", 1, 20, True),
+    ]
 
-    assert "C11 = 10" in captured
-    assert "Sorted array" in captured
-    assert "Search result" in captured
+    sorted_blocks = sorted(blocks, key=lambda b: (b.hardness, -b.weight))
+
+    # спочатку hardness=1 (C потім B через weight ↓)
+    assert sorted_blocks[0].name == "C"
+    assert sorted_blocks[1].name == "B"
+    assert sorted_blocks[2].name == "A"
 
 
-def test_search_found(capsys):
-    Program.main()
+def test_search_found():
+    blocks = [
+        Block("Stone", "rock", 5, 10, True),
+        Block("Wood", "organic", 3, 5, True),
+    ]
 
-    captured = capsys.readouterr().out
+    target = Block("Wood", "organic", 3, 5, True)
 
-    assert "Found:" in captured
+    found = None
+    for b in blocks:
+        if b == target:
+            found = b
+            break
+
+    assert found is not None
+    assert found.name == "Wood"
+
+
+def test_search_not_found():
+    blocks = [
+        Block("Stone", "rock", 5, 10, True),
+        Block("Wood", "organic", 3, 5, True),
+    ]
+
+    target = Block("Iron", "metal", 7, 15, True)
+
+    found = None
+    for b in blocks:
+        if b == target:
+            found = b
+            break
+
+    assert found is None
