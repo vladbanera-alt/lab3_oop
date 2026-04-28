@@ -13,7 +13,6 @@ class Block:
                 f"Надійний={self.isSolid})")
 
     def __eq__(self, other):
-
         if not isinstance(other, Block):
             return False
 
@@ -28,7 +27,6 @@ class Block:
 
 class Program:
 
-
     @staticmethod
     def main():
         try:
@@ -42,14 +40,15 @@ class Program:
                 return
 
             blocks = [
-                Block("Stone", "rock", 5, 10, True),
-                Block("Glass", "sand", 1, 3, False),
-                Block("Wood", "organic", 3, 5, True),
+                Block("Stone", "rock", 3, 10, True),
+                Block("B", "m2", 1, 50, True),
+                Block("C", "m3", 1, 20, True),
                 Block("Iron", "metal", 7, 15, True),
                 Block("Leaves", "organic", 1, 2, False),
             ]
 
-            blocksSorted = sorted(blocks, key=lambda b: (b.hardness, -b.weight))
+            # 🔥 ВИПРАВЛЕНО СОРТУВАННЯ
+            blocksSorted = sorted(blocks, key=lambda b: (b.hardness, b.weight))
 
             print("\nSorted blocks:")
             for b in blocksSorted:
