@@ -1,18 +1,23 @@
 class Block:
 
-    def __init__(self, name, material, hardness, weight, isSolid):
+    #клас описує будівельний блок
+
+    def __init__(self, name, material, hardness, weight, is_solid):
+    #ініціалізація об'єкта блоку
         self.name = name
         self.material = material
         self.hardness = hardness
         self.weight = weight
-        self.isSolid = isSolid
+        self.is_solid = is_solid
 
     def __repr__(self):
-        return (f"Назва блоку={self.name}, Матеріал={self.material}, "
+    #повертає текстове представлення блоку
+        return (f"Назва={self.name}, Матеріал={self.material}, "
                 f"Твердість={self.hardness}, Вага={self.weight}, "
-                f"Надійний={self.isSolid})")
+                f"Твердий={self.is_solid}")
 
     def __eq__(self, other):
+        #порівняння 2 об'єктів
         if not isinstance(other, Block):
             return False
 
@@ -21,53 +26,82 @@ class Block:
             self.material == other.material and
             self.hardness == other.hardness and
             self.weight == other.weight and
-            self.isSolid == other.isSolid
+            self.is_solid == other.is_solid
         )
 
 
 class Program:
 
     @staticmethod
+    def calculate_variant(nzk):
+        #визначення варіанту
+        return nzk % 11
+
+    @staticmethod
+    def create_blocks():
+    #створює список блоків
+        return [
+            Block("Stone", "rock", 5, 10, True),
+            Block("Glass", "sand", 1, 3, False),
+            Block("Wood", "organic", 3, 5, True),
+            Block("Iron", "metal", 7, 15, True),
+            Block("Leaves", "organic", 1, 2, False),
+        ]
+
+    @staticmethod
+    def sort_blocks(blocks):
+    #сортування блоків за твердістю та вагою
+        return sorted(blocks, key=lambda b: (b.hardness, -b.weight))
+
+    @staticmethod
+    def find_block(blocks, target):
+    #пошук ідентичного блоку
+        for block in blocks:
+            if block == target:
+                return block
+        return None
+
+    @staticmethod
     def main():
         try:
+            #мій номер залікової книжки
             nzk = 5202
-            c11 = nzk % 11
 
-            print(f"C11 = {c11}")
 
-            if c11 != 10:
-                print("Wrong variant")
+            variant = Program.calculate_variant(nzk)
+            print(f"C11 (варіант) = {variant}")
+
+
+            if variant != 10:
+                print("Ця програма реалізує тільки варіант 10")
                 return
 
-            blocks = [
-                Block("Stone", "rock", 3, 10, True),
-                Block("B", "m2", 1, 50, True),
-                Block("C", "m3", 1, 20, True),
-                Block("Iron", "metal", 7, 15, True),
-                Block("Leaves", "organic", 1, 2, False),
-            ]
 
-            # 🔥 ВИПРАВЛЕНО СОРТУВАННЯ
-            blocksSorted = sorted(blocks, key=lambda b: (b.hardness, b.weight))
-
-            print("\nSorted blocks:")
-            for b in blocksSorted:
-                print(b)
-
-            target = Block("Wood", "organic", 3, 5, True)
-
-            found = None
-            for b in blocksSorted:
-                if b == target:
-                    found = b
-                    break
-
-            print("\nSearch result:")
-            print(found if found else "Not found")
-
-        except Exception as e:
-            print("Error:", e)
+            blocks = Program.create_blocks()
 
 
+            sorted_blocks = Program.sort_blocks(blocks)
+
+            print("\nВідсортовані блоки:")
+            for block in sorted_blocks:
+                print(block)
+
+
+            target_block = Block("Wood", "organic", 3, 5, True)
+
+
+            found_block = Program.find_block(sorted_blocks, target_block)
+
+            print("\nРезультат пошуку:")
+            if found_block:
+                print(found_block)
+            else:
+                print("Об'єкт не знайдено")
+
+        except Exception as error:
+            print("Виникла помилка:", error)
+
+
+#вхід
 if __name__ == "__main__":
     Program.main()
